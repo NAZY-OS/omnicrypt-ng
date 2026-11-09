@@ -1,0 +1,108 @@
+# ============================================================================
+#  OmniCrypt - dependency list for all major distributions
+# ============================================================================
+#
+#  This file is NOT a pip requirements file. OmniCrypt is a system tool
+#  written in Python that binds to native libraries through PyGObject, so all
+#  dependencies are OS packages.
+#
+#  Usage per package manager:
+#
+#    Debian / Ubuntu / Mint .......  sudo apt install $(tr '\n' ' ' < requirements.txt)
+#    Fedora / RHEL / Rocky ........  sudo dnf install -y $(grep -v '^#' requirements.txt | tr '\n' ' ')
+#    Arch / Manjaro ...............  sudo pacman -S --needed $(grep -v '^#' requirements.txt | tr '\n' ' ')
+#    openSUSE / SLES ..............  sudo zypper install $(grep -v '^#' requirements.txt | tr '\n' ' ')
+#    Alpine ........................  sudo apk add $(grep -v '^#' requirements.txt | tr '\n' ' ')
+#
+#  Only the generic package names are listed. Names differ per distro, so
+#  use the per-distro lists in README.md for exact package names.
+#
+#  Mark a line with "#" to skip it for your package manager:
+#      sed 's/^libnotify-bin/#libnotify-bin/' requirements.txt | ...
+# ============================================================================
+
+
+# ---------------------------------------------------------------------------
+# BUILD SYSTEM
+# ---------------------------------------------------------------------------
+meson
+ninja
+pkg-config
+make
+desktop-file-utils
+appstream-util
+gettext
+git
+
+
+# ---------------------------------------------------------------------------
+# PYTHON
+# ---------------------------------------------------------------------------
+python3
+python3-gi
+python3-gi-cairo
+python3-setuptools
+
+
+# ---------------------------------------------------------------------------
+# GTK 4  (main window - omnicrypt_gui.py)
+# ---------------------------------------------------------------------------
+gir1.2-gtk-4.0
+libgtk-4-1
+libadwaita-1-0
+libglib2.0-dev
+
+
+# ---------------------------------------------------------------------------
+# GTK 3  (tray helper process ONLY - tray_helper.py)
+# ---------------------------------------------------------------------------
+# NOTE: AyatanaAppIndicator3 is bound to GTK 3 and cannot be loaded into a
+#       GTK 4 process. That is why the tray runs as a separate helper.
+gir1.2-gtk-3.0
+libgtk-3-0
+
+
+# ---------------------------------------------------------------------------
+# SYSTEM TRAY ICON
+# ---------------------------------------------------------------------------
+gir1.2-ayatanaappindicator3-0.1
+libayatana-appindicator3-1
+
+
+# ---------------------------------------------------------------------------
+# NOTIFICATIONS
+# ---------------------------------------------------------------------------
+libnotify-bin
+gir1.2-notify-0.7
+
+
+# ---------------------------------------------------------------------------
+# CRYPTO / STORAGE TOOLING  (used by the privileged helper)
+# ---------------------------------------------------------------------------
+cryptsetup
+cryptsetup-bin
+fscrypt
+udisks2
+udisksctl
+pkexec
+policykit-1
+util-linux
+e2fsprogs
+coreutils
+
+
+# ---------------------------------------------------------------------------
+# ICONS AND DESKTOP INTEGRATION
+# ---------------------------------------------------------------------------
+hicolor-icon-theme
+adwaita-icon-theme
+shared-mime-info
+xdg-utils
+
+
+# ---------------------------------------------------------------------------
+# OPTIONAL
+# ---------------------------------------------------------------------------
+# gsmartcontrol   - SMART / disk health in the GUI
+# gnome-disk-utility - alternative disk GUI
+# polkit-gnome / polkit-kde-agent - polkit agent for pkexec prompts

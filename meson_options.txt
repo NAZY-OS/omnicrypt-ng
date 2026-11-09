@@ -1,0 +1,2 @@
+option('tray', type: 'boolean', value: true,
+  description: 'Install the GTK3 tray helper')
