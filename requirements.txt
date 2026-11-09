@@ -1,108 +1,57 @@
-# ============================================================================
-#  OmniCrypt - dependency list for all major distributions
-# ============================================================================
-#
-#  This file is NOT a pip requirements file. OmniCrypt is a system tool
-#  written in Python that binds to native libraries through PyGObject, so all
-#  dependencies are OS packages.
-#
-#  Usage per package manager:
-#
-#    Debian / Ubuntu / Mint .......  sudo apt install $(tr '\n' ' ' < requirements.txt)
-#    Fedora / RHEL / Rocky ........  sudo dnf install -y $(grep -v '^#' requirements.txt | tr '\n' ' ')
-#    Arch / Manjaro ...............  sudo pacman -S --needed $(grep -v '^#' requirements.txt | tr '\n' ' ')
-#    openSUSE / SLES ..............  sudo zypper install $(grep -v '^#' requirements.txt | tr '\n' ' ')
-#    Alpine ........................  sudo apk add $(grep -v '^#' requirements.txt | tr '\n' ' ')
-#
-#  Only the generic package names are listed. Names differ per distro, so
-#  use the per-distro lists in README.md for exact package names.
-#
-#  Mark a line with "#" to skip it for your package manager:
-#      sed 's/^libnotify-bin/#libnotify-bin/' requirements.txt | ...
-# ============================================================================
+## 2. Dependencies
 
+| Purpose | Debian / Ubuntu | Fedora | Arch | openSUSE | Alpine |
+|---|---|---|---|---|---|
+| Build | `meson ninja-build pkg-config desktop-file-utils appstream` | `meson ninja-build pkgconf-pkg-config desktop-file-utils appstream` | `meson ninja pkgconf desktop-file-utils appstream` | `meson ninja pkg-config desktop-file-utils appstream` | `meson ninja-build pkgconf desktop-file-utils appstream` |
+| GTK 4 | `gir1.2-gtk-4.0 libgtk-4-1 libadwaita-1-0` | `python3-gobject gtk4 libadwaita` | `python-gobject gtk4 libadwaita` | `python3-gobject gtk4 libadwaita-1` | `py3-gobject gtk4` |
+| GTK 3 (tray) | `gir1.2-gtk-3.0 libgtk-3-0` | `python3-gobject gtk3` | `python-gobject gtk3` | `python3-gobject gtk3` | `py3-gobject gtk3` |
+| Tray | `gir1.2-ayatanaappindicator3-0.1` | `libayatana-appindicator-gtk3` | `libayatana-appindicator` | `libayatana-appindicator-gtk3` | `libayatana-appindicator` |
+| Notify | `libnotify-bin gir1.2-notify-0.7` | `libnotify` | `libnotify` | `libnotify-tools` | `libnotify` |
+| Crypto | `cryptsetup-bin fscrypt udisks2 pkexec policykit-1` | `cryptsetup fscrypt udisks2 polkit` | `cryptsetup fscrypt udisks libpolkit` | `cryptsetup fscrypt udisks2 polkit` | `cryptsetup fscrypt udisks polkit` |
+| Misc | `python3-gi e2fsprogs util-linux hicolor-icon-theme` | `python3-gobject e2fsprogs util-linux hicolor-icon-theme` | `python-gobject e2fsprogs util-linux hicolor-icon-theme` | `python3-gobject e2fsprogs util-linux hicolor-icon-theme` | `py3-gobject e2fsprogs util-linux hicolor-icon-theme` |
 
-# ---------------------------------------------------------------------------
-# BUILD SYSTEM
-# ---------------------------------------------------------------------------
-meson
-ninja
-pkg-config
-make
-desktop-file-utils
-appstream-util
-gettext
-git
+### Debian / Ubuntu / Mint / Pop!_OS
 
+```bash
+sudo apt update
+sudo apt install meson ninja-build pkg-config desktop-file-utils appstream \
+    python3-gi gir1.2-gtk-4.0 libgtk-4-1 libadwaita-1-0 \
+    gir1.2-gtk-3.0 libgtk-3-0 gir1.2-ayatanaappindicator3-0.1 \
+    libnotify-bin gir1.2-notify-0.7 \
+    cryptsetup-bin fscrypt udisks2 pkexec policykit-1 \
+    e2fsprogs util-linux hicolor-icon-theme
+```
 
-# ---------------------------------------------------------------------------
-# PYTHON
-# ---------------------------------------------------------------------------
-python3
-python3-gi
-python3-gi-cairo
-python3-setuptools
+### Fedora / RHEL / Rocky / AlmaLinux
 
+```bash
+sudo dnf install -y meson ninja-build pkgconf-pkg-config desktop-file-utils \
+    appstream python3-gobject gtk4 gtk3 libadwaita \
+    libayatana-appindicator-gtk3 libnotify \
+    cryptsetup fscrypt udisks2 polkit e2fsprogs util-linux hicolor-icon-theme
+```
 
-# ---------------------------------------------------------------------------
-# GTK 4  (main window - omnicrypt_gui.py)
-# ---------------------------------------------------------------------------
-gir1.2-gtk-4.0
-libgtk-4-1
-libadwaita-1-0
-libglib2.0-dev
+### Arch / Manjaro / EndeavourOS
 
+```bash
+sudo pacman -S --needed meson ninja pkgconf desktop-file-utils appstream \
+    python-gobject gtk4 gtk3 libadwaita libayatana-appindicator libnotify \
+    cryptsetup fscrypt udisks libpolkit e2fsprogs util-linux hicolor-icon-theme
+```
 
-# ---------------------------------------------------------------------------
-# GTK 3  (tray helper process ONLY - tray_helper.py)
-# ---------------------------------------------------------------------------
-# NOTE: AyatanaAppIndicator3 is bound to GTK 3 and cannot be loaded into a
-#       GTK 4 process. That is why the tray runs as a separate helper.
-gir1.2-gtk-3.0
-libgtk-3-0
+### openSUSE / SLES
 
+```bash
+sudo zypper install meson ninja pkg-config desktop-file-utils appstream \
+    python3-gobject gtk4 gtk3 libadwaita libayatana-appindicator-gtk3 \
+    libnotify-tools cryptsetup fscrypt udisks2 polkit \
+    e2fsprogs util-linux hicolor-icon-theme
+```
 
-# ---------------------------------------------------------------------------
-# SYSTEM TRAY ICON
-# ---------------------------------------------------------------------------
-gir1.2-ayatanaappindicator3-0.1
-libayatana-appindicator3-1
+### Alpine Linux
 
-
-# ---------------------------------------------------------------------------
-# NOTIFICATIONS
-# ---------------------------------------------------------------------------
-libnotify-bin
-gir1.2-notify-0.7
-
-
-# ---------------------------------------------------------------------------
-# CRYPTO / STORAGE TOOLING  (used by the privileged helper)
-# ---------------------------------------------------------------------------
-cryptsetup
-cryptsetup-bin
-fscrypt
-udisks2
-udisksctl
-pkexec
-policykit-1
-util-linux
-e2fsprogs
-coreutils
-
-
-# ---------------------------------------------------------------------------
-# ICONS AND DESKTOP INTEGRATION
-# ---------------------------------------------------------------------------
-hicolor-icon-theme
-adwaita-icon-theme
-shared-mime-info
-xdg-utils
-
-
-# ---------------------------------------------------------------------------
-# OPTIONAL
-# ---------------------------------------------------------------------------
-# gsmartcontrol   - SMART / disk health in the GUI
-# gnome-disk-utility - alternative disk GUI
-# polkit-gnome / polkit-kde-agent - polkit agent for pkexec prompts
+```bash
+sudo apk add meson ninja-build pkgconf desktop-file-utils appstream \
+    py3-gobject gtk4 gtk3 libayatana-appindicator libnotify \
+    cryptsetup fscrypt udisks polkit e2fsprogs util-linux hicolor-icon-theme
+```
